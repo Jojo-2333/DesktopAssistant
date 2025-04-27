@@ -169,13 +169,13 @@ public:
         }
 
         string line;
+        fflush(stdin);
         getline(file, line);
-        cout << line << endl;
         if(line.compare("Date,Description,Category,Amount")!=0){
             cout << "error:账本文件损坏" << endl;
             return;
         }
-
+        fflush(stdin);
         while(getline(file, line)) {
             account new_account(line);
             ledger.push_back(new_account);
@@ -189,7 +189,7 @@ public:
             file << account.csv_format() << endl;
         }
         file.close();
-        cout << "已保存" << endl;
+        cout << "\n----------已保存更改----------" << endl;
     }
     void sort() {
         std::sort(ledger.begin(), ledger.end(), [](const account& a, const account& b) {
@@ -291,23 +291,159 @@ public:
             
         }
     }
+
+    void monthly_statistics(string year_month){
+        cout << "\n-------------------------" << endl;
+        cout << "正在生成"<< year_month <<"月度统计..." <<"\n-------------------------"<< endl;
+        double income = 0;
+        double expense = 0;
+        for(const auto& account : ledger) {   //遍历ledger容器中的每一个account对象
+            if(account.date.substr(0, 7) == year_month) {
+                cout << account.csv_format() << endl;
+                if(account.amount > 0) {
+                    income += account.amount;
+                }
+                else {
+                    expense += account.amount;
+                }
+            }
+        }
+        cout <<"-------------------------\n"<< "收入：" << income << endl;
+        cout << "支出：" << expense << endl;
+        cout << "结余：" << income + expense << endl;
+        cout << "-------------------------" << endl;
+    }
+
+    //对齐列宽输出表哥
+    void formatted_show(){
+        cout << "----------------------记账本 Ledger----------------------"<< endl;
+        int max_width_description=0;
+        int max_width_category=0;
+        int max_width_amount=0;
+        for(const auto& account : ledger) {   //遍历ledger容器中的每一个account对象
+            if(account.description.length() > max_width_description) {
+                max_width_description = account.description.length();
+            }
+            if(account.category.length() > max_width_category) {
+                max_width_category = account.category.length(); 
+            }
+            std::stringstream ss;
+            ss << std::fixed << std::setprecision(2);  // 强制保留两位小数
+            ss << account.amount;
+            if(ss.str().length() > max_width_amount) {
+                max_width_amount = ss.str().length();
+            }
+        }
+        // 计算表格宽度
+        int total_width = 10 + max_width_description + max_width_category + max_width_amount + 12; // 包括分隔符和框架
+
+        // 输出表格的表头，表头宽度与数据列宽度一致
+        cout << "+" << string(total_width-1, '-') << "+" << endl;
+        cout << "| " << left << setw(11) << "Date"
+            << "| " << left << setw(max_width_description) << "Description"<<" "
+            << "| " << left << setw(max_width_category) << "Category"<<" "
+            << "| " << right << setw(max_width_amount) << "Amount"
+            << " |" << endl;
+        cout << "+" << string(total_width-1, '-') << "+" << endl;
+
+        // 输出每一行的数据
+        for (const auto& account : ledger) {
+            cout << "| " << left << setw(11) << account.date
+                << "| " << left << setw(max_width_description) << account.description <<" "
+                << "| " << left << setw(max_width_category) << account.category<<" "
+                << "| " << right << setw(max_width_amount) << fixed << setprecision(2) << account.amount
+                << " |" << endl;
+        }
+
+        // 输出表格的底线
+        cout << "+" << string(total_width - 1, '-') << "+" << endl;
+    }
+    int menu(accounts& Ledger) {
+        cout << "欢迎使用Ledger" << endl;
+        cout << "当前日期: "<< formatted_time()<< endl;
+    
+        cout << "请选择操作：" << endl;
+        cout << "1. 查看账本" << endl;
+        cout << "2. 添加条目" << endl;
+        cout << "3. 删除条目" << endl;
+        cout << "4. 编辑条目" << endl;
+        cout << "5. 月度统计" << endl;
+        cout << "6. 退出" << endl;
+        int choice;
+        cin >> choice;  
+        while(choice < 1 || choice > 6) {
+            cerr << "error:无效的输入，请重新输入" << endl;
+            cin.clear();
+            cin >> choice; 
+        }
+        if (choice == 6) {
+            cout << "感谢使用Ledger" << endl;
+            return 6; 
+        }
+        else {
+            switch(choice) {
+                case 1:
+                    Ledger.formatted_show();
+                    cout << "\n按任意键返回主菜单\n";
+                    fflush(stdin);
+                    getchar();
+                    fflush(stdin);
+                    break;
+                case 2:
+                    Ledger.add_account();
+                    cout << "\n按任意键返回主菜单\n";
+                    fflush(stdin);
+                    getchar();
+                    fflush(stdin);
+                    break;
+                case 3:
+                    Ledger.show();
+                    cout << "请输入要删除的条目索引：" << endl;
+                    int index;
+                    cin >> index;
+                    Ledger.delete_account(index);
+                    cout << "\n按任意键返回主菜单\n";
+                    fflush(stdin);
+                    getchar();
+                    fflush(stdin);
+                    break; 
+                case 4:
+                    Ledger.show();
+                    cout << "请输入要编辑的条目索引：(从0开始)" << endl;
+                    int index1;
+                    cin >> index1;
+                    Ledger.edit_account(index1);
+                    cout << "\n按任意键返回主菜单\n";
+                    fflush(stdin);
+                    getchar();
+                    fflush(stdin);
+                    break;
+                case 5:
+                    cout << "请输入要查询的年月(格式:YYYY-MM):" << endl;
+                    string year_month;
+                    cin >> year_month;
+                    while(year_month.length()!= 7 || (year_month[4]!='-')){
+                        cout << "error:日期格式错误，请重新输入(格式:YYYY-MM)" << endl;
+                        cin.clear();
+                        cin >> year_month;
+                    }
+                    Ledger.monthly_statistics(year_month);
+                    cout << "\n按任意键返回主菜单\n";
+                    fflush(stdin);
+                    getchar();
+                    fflush(stdin);
+                    break;
+            } 
+        }
+        menu(Ledger);
+    }
 };
 
 
-
 int main() {
-    cout << "欢迎使用Ledger" << endl;
-    cout << "当前日期: "<< formatted_time()<< endl;
+    system("chcp 65001 > nul");   //设置编码为UTF-8,并禁用输出提示
     accounts Ledger;
-    
-    Ledger.add_account("2024-01-01", "test", "test", 1000);
-    Ledger.add_account("2024-01-02", "test2", "test2", 2000);
-    Ledger.show();
-    Ledger.delete_account(1);
-    Ledger.show();
-    Ledger.edit_account(0);
-    Ledger.show();
+    Ledger.menu(Ledger);
+
+    getchar();
 }
-
-
-
