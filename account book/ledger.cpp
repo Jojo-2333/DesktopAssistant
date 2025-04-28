@@ -1,31 +1,8 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <ctime>
-#include <time.h>
-#include <iomanip>
-#include <algorithm>
-#include <filesystem>
+#include "record class.h"
 
 using namespace std;
 namespace fs = filesystem;
-//全局获取当前日期
-string formatted_time(){
-    time_t t = time(nullptr);
-    tm* local_time = localtime(&t);
-    if(local_time != nullptr) {
-        // cout << "当前时间：" << put_time(local_time, "%Y-%m-%d %H:%M:%S") << endl;
-        stringstream ss;
-        ss << put_time(local_time, "%Y-%m-%d");
-        return ss.str();
-    }
-    else {
-        cerr << "error: failed to get the time" << endl;
-        return ""; 
-    }
-}
+
 
 //全局操作的文件
 const string ledger_dir = "ledger.csv";
@@ -91,7 +68,7 @@ return true;
 // };
 
 //下文account有“账目”的意思，注意不要和账户搞混。如make an account
-class account {     //单条账目
+class account:public Record {     //单条账目
 public:
     string date;
     string description;
@@ -117,7 +94,7 @@ public:
         ss << amount;                              
         return date + "," + description + "," + category + "," + ss.str();
     }
-    void edit() {
+    void edit() override{
         cout << "时间是否是当日？(y/n)" << endl;
         char choice;
         cin >> choice;
@@ -141,12 +118,12 @@ public:
         cout << "请输入新的金额：" << endl;
         cin >> amount;
     }
-    void show() const {
+    void show() const override {
         cout << csv_format() << endl;
     }
 };
 
-class accounts {    //账目本
+class accounts:public Records {    //账目本
 public:
     vector<account> ledger;
     accounts() {    //构造函数,从文件中读取
@@ -286,6 +263,7 @@ public:
             }
             else if(choice == 'y') {
                 cout << "修改已保存" << endl;
+                sort();
                 return; 
             }
             
@@ -435,6 +413,7 @@ public:
                     break;
             } 
         }
+        fflush(stdin);
         menu(Ledger);
     }
 };
@@ -444,6 +423,6 @@ int main() {
     system("chcp 65001 > nul");   //设置编码为UTF-8,并禁用输出提示
     accounts Ledger;
     Ledger.menu(Ledger);
-
+    fflush(stdin);
     getchar();
 }

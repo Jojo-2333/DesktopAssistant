@@ -1,9 +1,7 @@
 Date,Description,Category,Amount
 2024-01-01,test,test,1000.00
 2024-01-01,test,test,1000.00
-2025-04-27,test,test,-10.00
 2024-01-02,test2,test2,2000.00
-2024-01-15,Groceries,Food,-50.00
 2024-02-01,Rent,Housing,-1200.00
 2024-03-10,Utilities,Utilities,-200.00
 2024-04-05,Entertainment,Entertainment,-300.00
@@ -11,4 +9,6 @@ Date,Description,Category,Amount
 2024-06-08,Healthcare,Healthcare,-100.00
 2024-07-20,Travel,Travel,-500.00
 2024-09-18,Subscriptions,Subscriptions,-200.00
+2025-04-27,test,test,-10.00
 2025-04-27,Hotel fee,Tour Expense,-2000.00
+2025-04-28,test,test,10.00
