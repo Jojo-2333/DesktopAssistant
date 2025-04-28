@@ -1,28 +1,5 @@
 #include "record class.h"
-
-using namespace std;
-namespace fs = filesystem;
-
-
-//全局操作的文件
-const string ledger_dir = "ledger.csv";
-fstream file;
-
-bool file_init() {
-    fs::path p(ledger_dir);
-    if (!p.parent_path().empty() && !fs::exists(p.parent_path())) {
-    cerr << "error: inventory doesn't exsit " << p.parent_path() << endl;
-    return false;
-}
-
-// 检查文件名合法性
-if (p.filename().string().find_first_of("*?\"<>|") != string::npos) {
-    cerr << "error: illegal  " << endl;
-    return false;}
-
-return true;
-}
-
+string dir = "ledger.csv";
 // 已经弃用的日期类，因为可以直接字符串比较
 // class date {
 // public:
@@ -131,15 +108,15 @@ public:
             cout << "error:文件初始化失败" << endl;
             return;
         }
-        ifstream check(ledger_dir);
+        ifstream check(dir);
         if (!check) {
-            ofstream create(ledger_dir);
+            ofstream create(dir);
             create << "Date,Description,Category,Amount" << endl;
             create.close();
         }
         check.close();
 
-        file.open(ledger_dir, ios::in);
+        file.open(dir, ios::in);
         if (!file.is_open()) {  //文件打开失败
             cout << "error:文件打开失败" << endl;
             return;
@@ -160,7 +137,7 @@ public:
         sort();
     }
     ~accounts() {   //析构函数,将ledger中的账目覆写文件
-        ofstream file(ledger_dir, ios::out);
+        ofstream file(dir, ios::out);
         file << "Date,Description,Category,Amount" << endl;
         for(const auto& account : ledger) {   //遍历ledger容器中的每一个account对象
             file << account.csv_format() << endl;
@@ -336,7 +313,16 @@ public:
         // 输出表格的底线
         cout << "+" << string(total_width - 1, '-') << "+" << endl;
     }
+
+    void pause() {  //暂停程序，按任意键继续
+        cout << "\n按任意键返回主菜单\n";
+        fflush(stdin);
+        getchar();
+        fflush(stdin);
+    }
+
     int menu(accounts& Ledger) {
+
         cout << "欢迎使用Ledger" << endl;
         cout << "当前日期: "<< formatted_time()<< endl;
     
@@ -355,35 +341,26 @@ public:
             cin >> choice; 
         }
         if (choice == 6) {
-            cout << "感谢使用Ledger" << endl;
+            cout << "感谢使用Ledger，请按任意键以安全保存并退出" << endl;
             return 6; 
         }
         else {
             switch(choice) {
                 case 1:
                     Ledger.formatted_show();
-                    cout << "\n按任意键返回主菜单\n";
-                    fflush(stdin);
-                    getchar();
-                    fflush(stdin);
+                    pause();
                     break;
                 case 2:
                     Ledger.add_account();
-                    cout << "\n按任意键返回主菜单\n";
-                    fflush(stdin);
-                    getchar();
-                    fflush(stdin);
+                    pause();
                     break;
                 case 3:
                     Ledger.show();
-                    cout << "请输入要删除的条目索引：" << endl;
+                    cout << "请输入要删除的条目索引：(从0开始)" << endl;
                     int index;
                     cin >> index;
                     Ledger.delete_account(index);
-                    cout << "\n按任意键返回主菜单\n";
-                    fflush(stdin);
-                    getchar();
-                    fflush(stdin);
+                    pause();
                     break; 
                 case 4:
                     Ledger.show();
@@ -391,10 +368,7 @@ public:
                     int index1;
                     cin >> index1;
                     Ledger.edit_account(index1);
-                    cout << "\n按任意键返回主菜单\n";
-                    fflush(stdin);
-                    getchar();
-                    fflush(stdin);
+                    pause();
                     break;
                 case 5:
                     cout << "请输入要查询的年月(格式:YYYY-MM):" << endl;
@@ -406,10 +380,7 @@ public:
                         cin >> year_month;
                     }
                     Ledger.monthly_statistics(year_month);
-                    cout << "\n按任意键返回主菜单\n";
-                    fflush(stdin);
-                    getchar();
-                    fflush(stdin);
+                    pause();
                     break;
             } 
         }
@@ -420,6 +391,8 @@ public:
 
 
 int main() {
+
+
     system("chcp 65001 > nul");   //设置编码为UTF-8,并禁用输出提示
     accounts Ledger;
     Ledger.menu(Ledger);
