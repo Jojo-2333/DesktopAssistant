@@ -190,10 +190,14 @@ public:
     }
 //删除指定位置的账目，index从0开始，对应accounts容器中的第一个元素
     void delete_account(int index) {
-        while (index < 0 || index >= ledger.size()) {
+        while (index < -1 || index >= ledger.size()) {
             cout << "error:无效的索引，请重新输入" << endl;
             cin.clear();
             cin >> index; 
+        }
+        if(index == -1) {
+            cout << "已取消删除" << endl;
+            return; 
         }
         string temp = ledger[index].csv_format();
         cout << "确认删除账目：\n" << temp <<"\n吗？(y/n)" <<endl;
@@ -332,7 +336,7 @@ public:
         cout << "3. 删除条目" << endl;
         cout << "4. 编辑条目" << endl;
         cout << "5. 月度统计" << endl;
-        cout << "6. 退出" << endl;
+        cout << "6. 保存并退出" << endl;
         int choice;
         cin >> choice;  
         while(choice < 1 || choice > 6) {
@@ -356,7 +360,7 @@ public:
                     break;
                 case 3:
                     Ledger.show();
-                    cout << "请输入要删除的条目索引：(从0开始)" << endl;
+                    cout << "请输入要删除的条目索引：(从0开始)\n输入-1返回主菜单" << endl;
                     int index;
                     cin >> index;
                     Ledger.delete_account(index);
