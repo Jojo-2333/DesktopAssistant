@@ -1,0 +1,77 @@
+
+
+using namespace CryptoPP;
+using namespace std;
+
+// AES 加密函数
+string Encrypt(const string& plaintext, const byte* key, const byte* iv) {
+    // 检查密钥和 IV 的长度
+    if (key == NULL || iv == NULL) {
+        cerr << "密钥或 IV 不能为空" << endl;
+        return "";
+    }
+
+    // 初始化加密对象
+    CBC_Mode<AES>::Encryption encryptor;
+    encryptor.SetKeyWithIV(key, AES::DEFAULT_KEYLENGTH, iv, AES::BLOCKSIZE);
+
+    // 创建字符串流进行加密
+    string ciphertext;
+    StringSource ss(plaintext, true, 
+        new StreamTransformationFilter(encryptor,
+            new StringSink(ciphertext)
+        )
+    );
+
+    return ciphertext;
+}
+
+// AES 解密函数
+string Decrypt(const string& ciphertext, const byte* key, const byte* iv) {
+    // 检查密钥和 IV 的长度
+    if (key == NULL || iv == NULL) {
+        cerr << "密钥或 IV 不能为空" << endl;
+        return "";
+    }
+
+    // 初始化解密对象
+    CBC_Mode<AES>::Decryption decryptor;
+    decryptor.SetKeyWithIV(key, AES::DEFAULT_KEYLENGTH, iv, AES::BLOCKSIZE);
+
+    // 创建字符串流进行解密
+    string plaintext;
+    StringSource ss(ciphertext, true, 
+        new StreamTransformationFilter(decryptor,
+            new StringSink(plaintext)
+        )
+    );
+
+    return plaintext;
+}
+
+// 主函数
+int main() {
+    // 生成随机密钥和 IV
+    AutoSeededRandomPool rng;
+    byte key[AES::DEFAULT_KEYLENGTH];
+    byte iv[AES::BLOCKSIZE];
+
+    rng.GenerateBlock(key, sizeof(key));
+    rng.GenerateBlock(iv, sizeof(iv));
+
+    // 要加密的明文
+    string plaintext = "这是一段需要加密的文本";
+    cout << "明文: " << plaintext << endl;
+
+    // 加密
+    string ciphertext = Encrypt(plaintext, key, iv);
+    cout << "加密后的密文（十六进制表示）: ";
+    StringSource(ciphertext, true, new HexEncoder(new Redirector(cout)));
+    cout << endl;
+
+    // 解密
+    string decryptedtext = Decrypt(ciphertext, key, iv);
+    cout << "解密后的明文: " << decryptedtext << endl;
+
+    return 0;
+}

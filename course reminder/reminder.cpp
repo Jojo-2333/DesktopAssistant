@@ -230,7 +230,7 @@ public:
         cout << "-------------------------" << endl;
     }
 
-    //对齐列宽输出表哥
+    //对齐列宽输出表格
     void formatted_show(){
         cout << "------------- 课程提醒Reminder -------------"<< endl;
         int max_width_content = 0; // 内容列的最大宽度
@@ -271,7 +271,7 @@ public:
 
     int menu(Reminders& _reminders) {
 
-        cout << "欢迎使用Reminder" << endl;
+        cout << "欢迎使用Reminders" << endl;
         cout << "当前日期: "<< formatted_time()<< endl;
     
         cout << "请选择操作：" << endl;
@@ -289,7 +289,7 @@ public:
             cin >> choice; 
         }
         if (choice == 6) {
-            cout << "感谢使用_reminders，请按任意键以安全保存并退出" << endl;
+            cout << "感谢使用Reminders，请按任意键以安全保存并退出" << endl;
             return 6; 
         }
         else {
