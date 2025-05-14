@@ -87,7 +87,7 @@ public:
     Password(string website,string username,string password, string iv):website(website),username(username),password(password),iv(iv){
         //将iv转换为byte数组
         HexDecoder decoder;
-        decoder.Attach(new ArraySink(iv_byte, sizeof(iv_byte)));
+        decoder.Attach(new ArraySink(iv_byte, AES::BLOCKSIZE));
         decoder.Put((const CryptoPP::byte*)iv.data(), iv.size());
         decoder.MessageEnd();
     }
@@ -99,7 +99,7 @@ public:
         getline(ss,iv,',');
         //将iv转换为byte数组
         HexDecoder decoder;
-        decoder.Attach(new ArraySink(iv_byte, sizeof(iv_byte)));
+        decoder.Attach(new ArraySink(iv_byte, AES::BLOCKSIZE));
         decoder.Put((const CryptoPP::byte*)iv.data(), iv.size());
         decoder.MessageEnd();
         }
@@ -110,10 +110,8 @@ public:
         cout <<  website << "  " << username << "  " << "******" << endl;
     }
 
+
     void edit(){
-        cout << "请提供密码库密钥：";
-        string user_key;
-        cin >> user_key;
         edit(key);
     }
     void edit(string key){
@@ -135,22 +133,20 @@ public:
             cout << "操作取消" << endl;
             return;
         }
-
+        
         // 生成随机的 IV
         AutoSeededRandomPool rng;
         CryptoPP::byte *iv_byte = new CryptoPP::byte[AES::BLOCKSIZE];
-        rng.GenerateBlock(iv_byte, sizeof(iv_byte));
+        rng.GenerateBlock(iv_byte, AES::BLOCKSIZE);
 
         // 将 IV_byte 转换为十六进制字符串IV
         HexEncoder encoder(new StringSink(iv));
         encoder.Put(iv_byte, sizeof(iv_byte));
         encoder.MessageEnd();
-
         // 加密密码
         AES_Processer aes_processor;
         password = aes_processor.Encrypt(password_plaintext, key_byte, iv_byte);
         
-
     }
 
 };
@@ -258,11 +254,6 @@ public:
             }
         sort();
 
-        cout << "调试：密码本加载完成，输出密码本数组" << endl;
-        for(const auto& Password : _passwords) {   //遍历_passwords数组,将每个Password对象的show()函数返回值写入文件
-            Password.show();   //调用Password类的show()函数
-        }
-
         //将user_key转换为byte数组
         for(int i=0;i<user_key.length();i++){
             key_byte[i] = static_cast<CryptoPP::byte>(user_key[i]);
@@ -296,17 +287,10 @@ public:
     }   
     
     void show(int index) {   //显示指定index的Password对象的show()函数返回值
-        // cout << "----------密码本----------" << endl;
-        // cout << "Website,Username,Password" << endl;
-        // _passwords[index].show();   //调用Password类的show()函数
-        // cout << "输入密码库密钥以查看密码：" << endl;
-        // string key;
-        // cin >> key;
-
         // 解密密码
         AES_Processer aes_processor;
         string decrypted_password = aes_processor.Decrypt(_passwords[index].password, key_byte, _passwords[index].iv_byte);
-        cout << _passwords[index].website << _passwords[index].username << decrypted_password << endl;
+        cout << _passwords[index].website << "  " << _passwords[index].username << "  " << decrypted_password << endl;
         // cout << "------------------------" << endl;
     }
 
@@ -345,11 +329,11 @@ public:
         // 生成随机的 IV
         AutoSeededRandomPool rng;
         CryptoPP::byte iv_byte[AES::BLOCKSIZE];
-        rng.GenerateBlock(iv_byte, sizeof(iv_byte));
+        rng.GenerateBlock(iv_byte, AES::BLOCKSIZE);
         
         // 将 IV_byte 转换为十六进制字符串IV
         HexEncoder encoder(new StringSink(iv));
-        encoder.Put(iv_byte, sizeof(iv_byte));
+        encoder.Put(iv_byte,AES::BLOCKSIZE);
         encoder.MessageEnd();
 
         // 加密密码
@@ -563,7 +547,6 @@ public:
                     }
                     if (choice2 == 4) {
                         pause();
-                        return 0;
                     }
                     else{
                         _passwords.unlock();
@@ -584,8 +567,9 @@ public:
                                 pause();
                                 break; 
                         } 
-                        return 0;
-                    }}
+                    }
+                    break;
+                }
                 case 3:
                     {string key_temp,key_temp2;
                     _passwords.unlock();
