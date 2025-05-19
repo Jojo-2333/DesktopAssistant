@@ -12,6 +12,8 @@
 #include <iomanip>
 #include <algorithm>
 #include <filesystem>
+#include <cstdlib>
+#include <windows.h>
 
 using namespace std;
 namespace fs = filesystem;

@@ -159,7 +159,6 @@ private:
         sort(entries_.begin(), entries_.end(), [](const Entry& a, const Entry& b) {
             return a.website < b.website; 
         });//lambda表达式,无名函数。
-        SaveToFile();
         ofstream ofs(dir, ios::out);
         ofs << "Website,Username,CipherHex,IVHex\n";
         ofs << user_key_ << "\n";
@@ -311,6 +310,7 @@ int main() {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
     #endif
+    SetConsoleTitleW(L"密码管理器Password Manager");
     cin.sync_with_stdio(false);
     PasswordManager mgr;
     mgr.Run();

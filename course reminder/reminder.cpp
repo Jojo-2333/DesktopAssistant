@@ -339,6 +339,7 @@ public:
 
 int main() {
     system("chcp 65001 > nul");   //设置编码为UTF-8,并禁用输出提示
+    SetConsoleTitleW(L"课程提醒器Course Reminder");
     Reminders _reminders;
     _reminders.menu(_reminders);
     fflush(stdin);

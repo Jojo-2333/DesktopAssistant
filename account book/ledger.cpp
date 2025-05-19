@@ -398,6 +398,7 @@ int main() {
 
 
     system("chcp 65001 > nul");   //设置编码为UTF-8,并禁用输出提示
+    SetConsoleTitleW(L"记账本Ledger");
     accounts Ledger;
     Ledger.menu(Ledger);
     fflush(stdin);
