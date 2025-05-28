@@ -275,10 +275,10 @@ public:
 
     //对齐列宽输出表哥
     void formatted_show(){
-        cout << "----------------------记账本 Ledger----------------------"<< endl;
-        int max_width_description=0;
-        int max_width_category=0;
-        int max_width_amount=0;
+        cout << "---------------------记账本 Ledger---------------------"<< endl;
+        int max_width_description=13;
+        int max_width_category=10;
+        int max_width_amount=9;
         for(const auto& account : ledger) {   //遍历ledger容器中的每一个account对象
             if(account.description.length() > max_width_description) {
                 max_width_description = account.description.length();
