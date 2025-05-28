@@ -1,0 +1,21 @@
+# ninja log v6
+10	808	7693586580320875	DesktopAssistant_autogen/timestamp	75ce969390eb3899
+10	808	7693586580320875	DesktopAssistant_autogen/mocs_compilation.cpp	75ce969390eb3899
+10	808	7693586580320875	C:/Users/TangCheng/Desktop/CodeProjects/QTProject/DesktopAssistant/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/DesktopAssistant_autogen/timestamp	75ce969390eb3899
+10	808	7693586580320875	C:/Users/TangCheng/Desktop/CodeProjects/QTProject/DesktopAssistant/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/DesktopAssistant_autogen/mocs_compilation.cpp	75ce969390eb3899
+824	2125	7693586581562249	CMakeFiles/DesktopAssistant.dir/main.cpp.obj	e93706be2ce61026
+814	2130	7693586581464156	CMakeFiles/DesktopAssistant.dir/DesktopAssistant_autogen/mocs_compilation.cpp.obj	a382672c3ecc98eb
+835	2329	7693586581675029	CMakeFiles/DesktopAssistant.dir/mainwindow.cpp.obj	b35e3bacad44d626
+2329	2518	7693586596615688	DesktopAssistant.exe	5039b303cbfaaa4c
+12	208	7693589996668428	DesktopAssistant_autogen/timestamp	75ce969390eb3899
+12	208	7693589996668428	DesktopAssistant_autogen/mocs_compilation.cpp	75ce969390eb3899
+12	208	7693589996668428	C:/Users/TangCheng/Desktop/CodeProjects/QTProject/DesktopAssistant/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/DesktopAssistant_autogen/timestamp	75ce969390eb3899
+12	208	7693589996668428	C:/Users/TangCheng/Desktop/CodeProjects/QTProject/DesktopAssistant/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/DesktopAssistant_autogen/mocs_compilation.cpp	75ce969390eb3899
+209	1511	7693589998635859	CMakeFiles/DesktopAssistant.dir/mainwindow.cpp.obj	b35e3bacad44d626
+1511	1666	7693590011644351	DesktopAssistant.exe	5039b303cbfaaa4c
+12	219	7693591909712624	DesktopAssistant_autogen/timestamp	75ce969390eb3899
+12	219	7693591909712624	DesktopAssistant_autogen/mocs_compilation.cpp	75ce969390eb3899
+12	219	7693591909712624	C:/Users/TangCheng/Desktop/CodeProjects/QTProject/DesktopAssistant/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/DesktopAssistant_autogen/timestamp	75ce969390eb3899
+12	219	7693591909712624	C:/Users/TangCheng/Desktop/CodeProjects/QTProject/DesktopAssistant/build/Desktop_Qt_6_9_0_MinGW_64_bit-Release/DesktopAssistant_autogen/mocs_compilation.cpp	75ce969390eb3899
+220	1598	7693591911733366	CMakeFiles/DesktopAssistant.dir/mainwindow.cpp.obj	b35e3bacad44d626
+12	164	7693592964485276	DesktopAssistant.exe	5039b303cbfaaa4c
