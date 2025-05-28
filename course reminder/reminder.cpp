@@ -4,8 +4,7 @@ string dir ="reminder.csv";
 
 class Reminder : public Record {
 public:
-    string time;
-    string content;
+    string time,content;
     int priority;
     string csv_format() const {   
         return time + "," + content + "," + to_string(priority);
@@ -219,10 +218,10 @@ public:
         }
     }
 
-    void daily_statistics(string year_month_day){   //按日期统计
+    void daily_statistics(string year_month_day){   //按日期查询
         cout << "\n-------------------------" << endl;
         cout << "正在生成"<< year_month_day <<"提醒事项..." <<"\n-------------------------"<< endl;
-        for(const auto& Reminder : _reminders) {   //遍历_reminders容器中的每一个Reminder对象
+        for(const auto& Reminder : _reminders) {
             if(Reminder.time.substr(0, 10) == year_month_day) {
                 cout << Reminder.csv_format() << endl;
             }
