@@ -50,7 +50,7 @@ public:
 
 struct Entry : public Record {
     string website, username;
-    vector<CryptoPP::byte> cipher, iv;
+    vector<CryptoPP::byte> cipher, iv;  //密文和IV的byte数组
     // hex 编码缓存
     string hex_cipher, hex_iv;
 
@@ -70,7 +70,7 @@ struct Entry : public Record {
         AES_Processor proc;
         cipher = proc.Encrypt(plain, key_byte, iv.data());
 
-        // 转 hex 存储
+        // 转hex存储
         StringSource(cipher.data(), cipher.size(), true,
             new HexEncoder(
                 new StringSink(hex_cipher), false));
@@ -79,7 +79,7 @@ struct Entry : public Record {
                 new StringSink(hex_iv), false));
     }
 
-    // 从 CSV 行读取
+    // 从CSV行读取
     Entry(const string& line) {
         string cs, is;
         stringstream ss(line);
@@ -88,7 +88,7 @@ struct Entry : public Record {
         getline(ss, hex_cipher, ',');
         getline(ss, hex_iv, ',');
 
-        // hex 解码回二进制
+        //hex解码回二进制
         StringSource(hex_cipher, true,
             new HexDecoder(
                 new VectorSink(cipher)));
@@ -101,14 +101,13 @@ struct Entry : public Record {
     string ToCsv() const {
         return website + "," + username + "," + hex_cipher + "," + hex_iv + "\n";
     }
+    // 列表显示（隐藏密码）
     void show() const {
         cout << website << "  " << username << "  " << "******" << endl; 
     }
-    // 列表显示（隐藏密码）
     void ShowSummary() const {
         show();
     }
-
     // 查看并解密
     void ShowFull(const CryptoPP::byte* key_byte) const {
         AES_Processor proc;
@@ -147,14 +146,14 @@ private:
     string user_key_;
     CryptoPP::byte key_byte_[AES::DEFAULT_KEYLENGTH];
 
-    // 将 user_key_ 填充到 key_byte_
+    // 将密码库密码填充到key_byte_
     void LoadKeyBytes() {
         size_t n = min(user_key_.size(), sizeof(key_byte_));
         memcpy(key_byte_, user_key_.data(), n);
         if (n < sizeof(key_byte_)) memset(key_byte_ + n, 0, sizeof(key_byte_) - n);
     }
 
-    // 保存到文件（会覆盖）
+    // 保存到文件（覆盖）
     void SaveToFile() {
         sort(entries_.begin(), entries_.end(), [](const Entry& a, const Entry& b) {
             return a.website < b.website; 
@@ -189,7 +188,7 @@ private:
         return true;
     }
 
-    int FindIndex(const string& site) {
+    int FindIndex(const string& site) {     //支持大小写不敏感搜索
         string lower = site;
         transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
         for (int i = 0; i < (int)entries_.size(); i++) {
@@ -216,7 +215,7 @@ public:
         }
     }
 
-    void Run() {
+    void menu() {
         while (true) {
             cout << "\n=== 密码管理器 ===\n";
             for (auto& e : entries_) e.ShowSummary();
@@ -313,6 +312,6 @@ int main() {
     SetConsoleTitleW(L"密码管理器Password Manager");
     cin.sync_with_stdio(false);
     PasswordManager mgr;
-    mgr.Run();
+    mgr.menu();
     return 0;
 }
